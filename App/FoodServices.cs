@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,70 +9,68 @@ using Contracts;
 
 namespace App
 {
-    public class FoodServices : IFood
+    public class FoodServices : IFoodServices
     {
-        public List<Food> _foodList = new List<Food>();
-
+        private List<Food> _foodList = new List<Food>();
 
         public List<FoodDTO> GetAll()
         {
             return _foodList
-                .Where(f => !f.isDeleted)
-                .Select(f => new FoodDTO { id = f.Id, Name = f.Name, Price = f.Price, Category = f.Category })
+                .Where(f => !f.IsDeleted)
+                .Select(f => new FoodDTO { Id = f.Id, Name = f.Name, Price = f.Price, Category = f.Category })
                 .ToList();
         }
 
-        public void add(FoodDTO food)
+        public void Add(FoodDTO food)
         {
-            if (_foodList.Any(x => x.Name.Equals(food.Name)))
+            if (food == null)
+            {
+                Console.WriteLine(" Cannot add null food.");
+                return;
+            }
+            if (_foodList.Any(x => x.Name.Equals(food.Name , StringComparison.OrdinalIgnoreCase)))
             {
                 Console.WriteLine($" Food {food.Name} is already exist ");
             }
-            Food food1 = new Food(food.Name, false, food.Price, food.Category, false);
+            var food1 = new Food (food.Name,food.Price, food.Category);
             this._foodList.Add(food1);
             Console.WriteLine($" Food {food.Name} added sucessfully ");
-
-
         }
 
-        public void delete(FoodDTO food)
+        public void Delete(int id)
         {
-            Food food1 = _foodList.FirstOrDefault(x =>
-                !x.isDeleted &&
-                (x.Id == food.id || (
-                    x.Name.Equals(food.Name) &&
-                    x.Price == food.Price &&
-                    x.Category.Equals(food.Category)
-                )));
-
+            var food1 = _foodList.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
             if (food1 != null)
             {
-                food1.isDeleted = true;
-                Console.WriteLine($"Food '{food1.Name}' removed successfully.");
+                food1.IsDeleted = true;
+                Console.WriteLine($"Food with ID {id} deleted.");
             }
             else
             {
-                Console.WriteLine($"Food '{food.Name}' does not exist or is already deleted.");
+                Console.WriteLine($"Food with ID {id} not found or  already deleted.");
             }
         }
 
-        public void update(FoodDTO foodNew, FoodDTO foodOld)
+        public void Update(int id, FoodDTO updatedFood)
         {
-
-            Food food1 = _foodList.FirstOrDefault(x => x.Name == foodOld.Name);
-
-            if (food1 != null && !food1.isDeleted)
+            if (updatedFood == null)
             {
-                food1.Name = foodNew.Name;
-                food1.Price = foodNew.Price;
-                food1.Category = foodNew.Category;
-                food1.isUpdated = true;
-
-                Console.WriteLine($"Food with ID {food1.Id} updated successfully.");
+                Console.WriteLine(" Cannot update with null data");
+                return;
             }
-            else
+            var food = _foodList.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
+
+            if (food != null )
             {
-                Console.WriteLine($"Food with ID {foodOld.id} does not exist or is deleted.");
+                food.Name = updatedFood.Name;
+                food.Price = updatedFood.Price;
+                food.Category = updatedFood.Category;
+
+                Console.WriteLine($"Food with ID {id} updated successfully.");
+            }
+           else
+            {
+                Console.WriteLine($"Food with ID {id}  not found or deleted.");
             }
         }
 
