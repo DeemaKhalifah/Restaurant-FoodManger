@@ -70,7 +70,7 @@ namespace App
             }
            else
             {
-                Console.WriteLine($"Food with ID {id}  not found or deleted.");
+                Console.WriteLine($"Food with ID {id} not found or deleted.");
             }
         }
 
