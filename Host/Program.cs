@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Contracts;    
 using App;          
@@ -9,39 +9,33 @@ namespace Host
     {
         static void Main(string[] args)
         {
-            IFood foodService = new FoodServices(); 
+            IFoodServices foodService = new FoodServices();
 
-            foodService.add(new FoodDTO("PIZZA", 60.00, "JUNK FOOD"));
-            foodService.add(new FoodDTO("Burger", 40.00, "JUNK FOOD"));
-            foodService.add(new FoodDTO("pasta", 30.00, "JUNK FOOD"));
-            Console.WriteLine("--------------------------------------");
+            foodService.Add(new FoodDTO("Pizza", 60.00, "Junk Food"));
+            foodService.Add(new FoodDTO("Burger", 40.00, "Junk Food"));
+            foodService.Add(new FoodDTO("Pasta", 30.00, "Junk Food"));
 
-            List<FoodDTO> list = foodService.GetAll();
-            foreach (var x in list)
-            {
-                Console.WriteLine($"Name: {x.Name}, Price: {x.Price}, Category: {x.Category}, ID: {x.id}");
-            }
+            Console.WriteLine("------ Food List ------");
+            PrintList(foodService.GetAll());
 
-            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("------ Delete Burger ------");
+            foodService.Delete(2); 
+            PrintList(foodService.GetAll());
 
-            foodService.delete(new FoodDTO("PIZZA", 60.00, "JUNK FOOD"));
-            List<FoodDTO> list1 = foodService.GetAll();
-            foreach (var x in list1)
-            {
-                Console.WriteLine($"Name: {x.Name}, Price: {x.Price}, Category: {x.Category}, ID: {x.id}");
-            }
+            Console.WriteLine("------ Update Pasta ------");
+            foodService.Update(3, new FoodDTO("Updated Pasta", 35.00, "Healthy"));
+            PrintList(foodService.GetAll());
 
-            Console.WriteLine("--------------------------------------");
-
-            foodService.update(new FoodDTO("pppp", 30.00, "JUNK FOOD"), new FoodDTO("Burger", 30.00, "JUNK FOOD"));
-            List<FoodDTO> list2 = foodService.GetAll();
-            foreach (var x in list2)
-            {
-                Console.WriteLine($"Name: {x.Name}, Price: {x.Price}, Category: {x.Category}, ID: {x.id}");
-            }
-
-            Console.WriteLine("--------------------------------------");
             Console.ReadKey();
+        }
+
+        static void PrintList(List<FoodDTO> foods)
+        {
+            foreach (var food in foods)
+            {
+                Console.WriteLine($"ID: {food.Id}, Name: {food.Name}, Price: {food.Price}, Category: {food.Category}");
+            }
+            Console.WriteLine("--------------------------");
         }
     }
 }
